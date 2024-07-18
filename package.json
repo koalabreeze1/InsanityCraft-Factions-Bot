@@ -1,0 +1,24 @@
+{
+  "dependencies": {
+    "discord-rpc": "^4.0.1",
+    "dotenv": "^16.4.5",
+    "mineflayer": "^4.20.1"
+  },
+  "name": "insanitycraft-factions-bot",
+  "version": "1.0.0",
+  "description": "InsanityCraft factions bot made with Mineflayer",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/koalabreeze1/InsanityCraft-Factions-Bot.git"
+  },
+  "author": "koalabreeze1",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/koalabreeze1/InsanityCraft-Factions-Bot/issues"
+  },
+  "homepage": "https://github.com/koalabreeze1/InsanityCraft-Factions-Bot#readme"
+}

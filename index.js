@@ -4,63 +4,26 @@ const RPC = require('discord-rpc');
 const path = require('path');
 const fs = require('fs');
 
-const config = require('./config.json'); 
+const { clientId, server, username, password, auth, version } = require('./config.json');
 
-RPC.register(config.clientId); 
+RPC.register(clientId);
 
 const rpc = new RPC.Client({ transport: 'ipc' });
 let currentStatus = 'Idle';
 
-function loadModules(bot) {
-    const moduleDir = path.join(__dirname, 'modules');
-    const moduleFiles = fs.readdirSync(moduleDir).filter(file => file.endsWith('.js'));
-
-    for (const file of moduleFiles) {
-        const module = require(path.join(moduleDir, file));
-        if (typeof module.init === 'function') {
-            module.init(bot);
-        }
-    }
-}
-
-function updateActivity() {
-    rpc.setActivity({
-        details: currentStatus,
-        startTimestamp: new Date(),
-        largeImageKey: 'large',
-        smallImageKey: 'small',
-        smallImageText: 'Made with Mineflayer',
-        instance: false,
-        buttons: [
-            { label: 'GitHub', url: 'https://github.com/koalabreeze1/InsanityCraft-Factions-Bot' }
-        ]
-    }).catch(console.error);
-}
-
-function updateStatus(newStatus) {
-    currentStatus = newStatus;
-    updateActivity();
-}
-
 rpc.on('ready', () => {
     console.log('RPC Started');
-    updateActivity(); 
+    updateActivity();
 });
 
 rpc.login({ clientId }).catch(console.error);
 
-const bot = mineflayer.createBot({
-    host: config.server, 
-    username: config.username,
-    password: config.password,
-    auth: config.auth,
-    version: config.version
-});
+const bot = mineflayer.createBot({ host: server, username, password, auth, version });
 
 bot.on('login', () => {
     console.log('Bot has logged in');
-    updateStatus('Logging in');
-    loadModules(bot); 
+    updateStatus('Logged in');
+    loadModules(bot);
 });
 
 bot.once('spawn', () => {
@@ -90,3 +53,34 @@ const rl = readline.createInterface({
 rl.on('line', (input) => {
     bot.chat(input);
 });
+
+function loadModules(bot) {
+    const moduleDir = path.join(__dirname, 'modules');
+    const moduleFiles = fs.readdirSync(moduleDir).filter(file => file.endsWith('.js'));
+
+    moduleFiles.forEach(file => {
+        const module = require(path.join(moduleDir, file));
+        if (typeof module.init === 'function') {
+            module.init(bot);
+        }
+    });
+}
+
+function updateActivity() {
+    rpc.setActivity({
+        details: currentStatus,
+        startTimestamp: new Date(),
+        largeImageKey: 'large',
+        smallImageKey: 'small',
+        smallImageText: 'Made with Mineflayer',
+        instance: false,
+        buttons: [
+            { label: 'GitHub', url: 'https://github.com/koalabreeze1/InsanityCraft-Factions-Bot' }
+        ]
+    }).catch(console.error);
+}
+
+function updateStatus(newStatus) {
+    currentStatus = newStatus;
+    updateActivity();
+}
